@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { PeriodicElement } from 'src/app/views/home/home.component';
+import { PeriodicElement } from 'src/app/models/PeriodicElement';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({

@@ -1,14 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
+import { PeriodicElement } from 'src/app/models/PeriodicElement';
+import { PeriodicElementService } from 'src/app/services/periodicElement.service';
 import { ElementDialogComponent } from '../../shared/element-dialog/element-dialog.component';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
+
 
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
@@ -27,16 +24,24 @@ const ELEMENT_DATA: PeriodicElement[] = [
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  providers: [PeriodicElementService]
 })
+
 export class HomeComponent implements OnInit {
   @ViewChild(MatTable)
   table!: MatTable<any>
   displayedColumns: string[] = ['position', 'name', 'weight', 'symbol', 'actions'];
-  dataSource = ELEMENT_DATA;
+  dataSource: PeriodicElement[];
 
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog,
+              public periodicElementService: PeriodicElementService) {
+                this.periodicElementService.getElements()
+                .subscribe((data: PeriodicElement[]) => {
+                  this.dataSource = data;
+                });
+              }
 
 
   ngOnInit(): void {
