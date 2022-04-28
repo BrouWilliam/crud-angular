@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
               public periodicElementService: PeriodicElementService) {
                 this.periodicElementService.getElements()
                 .subscribe((data: PeriodicElement[]) => {
+                  console.log(data)
                   this.dataSource = data;
                 });
               }
@@ -40,6 +41,7 @@ export class HomeComponent implements OnInit {
         weight: null,
         symbol: ''
       } : {
+        id: element.id,
         position: element.position,
         name: element.name,
         weight: element.weight,
@@ -49,19 +51,30 @@ export class HomeComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result !== undefined){
-        if (this.dataSource.map(p => p.position).includes(result.position)) {
-          this.dataSource[result.position - 1] = result
-          this.table.renderRows()
+        if (this.dataSource.map(p => p.id).includes(result.id)) {
+          this.periodicElementService.editElement(result.id, result)
+            .subscribe((data: PeriodicElement) => {
+              const index = this.dataSource.findIndex(p => p.id === data.id);
+
+              this.dataSource[index] = data
+              this.table.renderRows()
+            })
         } else {
-          this.dataSource.push(result)
-          this.table.renderRows()
+          this.periodicElementService.createElement(result)
+            .subscribe((data: PeriodicElement) => {
+              this.dataSource.push(data)
+              this.table.renderRows()
+            })
         }
       }
     });
   }
 
   deleteElement(position: number): void{
-    this.dataSource = this.dataSource.filter(p => p.position !== position)
+    this.periodicElementService.deleteElement(position)
+    .subscribe(() =>{
+      this.dataSource = this.dataSource.filter(p => p.id !== position)
+    })
   }
 
   editElement(element: PeriodicElement): void{
