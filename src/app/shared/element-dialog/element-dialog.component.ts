@@ -9,6 +9,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 })
 export class ElementDialogComponent implements OnInit {
 
+  isChange: boolean = false;
   element!: PeriodicElement
 
   constructor(
@@ -16,6 +17,11 @@ export class ElementDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: PeriodicElement,) { }
 
   ngOnInit(): void {
+    if (this.data.position !== null) {
+      this.isChange = true;
+    } else {
+      this.isChange = false;
+    }
   }
 
   onCancel(): void {
